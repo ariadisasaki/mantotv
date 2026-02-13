@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MANTO TV</title>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+<style>
+*{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+body{margin:0;background:#061b0f;color:#eafff3}
+
+/* ===== THEME BUTTON ===== */
+.theme-toggle{
+  position:fixed;top:8px;right:10px;z-index:1600;
+  padding:7px 14px;border-radius:20px;border:0;cursor:pointer;
+  background:#0b3d1e;color:#eafff3;font-size:16px;transition:.25s ease;
+}
+.theme-toggle:hover{
+  background:#00d86f;transform:scale(1.1);
+  box-shadow:0 0 12px rgba(0,255,140,.7);
+}
+
+/* ===== MOBILE FIX ===== */
+@media(max-width:900px){
+  .theme-toggle{
+    top:8px;       /* tetap di atas layar */
+    right:10px;    /* tetap di kanan */
+    font-size:14px; 
+    padding:5px 10px;
+  }
+}
+
+/* ===== TICKER ===== */
+.ticker{
+  position:fixed;
+  bottom:0;
+  left:0;          /* WAJIB */
+  right:0;         /* WAJIB */
+  width:100%;      /* cukup 100% */
+  height:48px;
+  background:#0b3d1e;
+  overflow:hidden;
+  z-index:1000;
+
+  display:flex;
+  align-items:center;
+
+  padding:0;       /* hapus padding kiri */
+  margin:0;        /* pastikan nol */
+}
+
+.ticker span{
+  display:inline-block;
+  white-space:nowrap;
+
+  padding-left:20px;     /* jarak teks */
+  padding-right:100%;
+
+  animation:ticker 90s linear infinite;
+}
+
+html, body{
+  margin:0;
+  padding:0;
+  overflow-x:hidden;   /* penting untuk mobile */
+}
+
+@keyframes ticker{
+  0%{transform:translateX(0)}
+  100%{transform:translateX(-100%)}
+}
+.ticker.paused span{animation-play-state:paused}
+.ticker span{
+  padding-left:100%;
+}
+
+/* ===== LAYOUT ===== */
+.container{
+  display:flex;gap:12px;
+  height:calc(100vh - 48px);
+  padding:10px;
+}
+
+/* ===== PLAYER ===== */
+.player{flex:3}
+.player-wrapper{
+  position:relative;width:100%;height:100%;
+  background:#022b17;border-radius:10px;
+  box-shadow:0 0 18px rgba(0,255,128,.25);
+}
+video{
+  width:100%;height:100%;object-fit:cover;background:#000;
+}
+
+/* FULLSCREEN BUTTON */
+.fullscreen-btn{
+  position:absolute;bottom:14px;right:14px;
+  background:rgba(0,120,60,.85);color:#fff;border:0;
+  padding:12px 18px;border-radius:10px;
+  cursor:pointer;font-size:26px;transition:.25s ease;
+}
+.fullscreen-btn:hover{
+  background:#00ff8a;color:#003018;
+  transform:scale(1.12);
+}
+
+@media(max-width:900px){
+  .fullscreen-btn {
+    font-size:13px;
+    padding:6px 9px;
+  }
+}
+
+/* CLOCK */
+.clock{
+  position:absolute;top:10px;right:14px;
+  background:rgba(0,0,0,.6);
+  padding:8px 14px;font-size:20px;
+  border-radius:8px;color:#fff;font-weight:bold;
+}
+
+/* ===== CHANNEL LIST ===== */
+.channel-list{
+  flex:1;background:#08311c;
+  border-radius:8px;padding:8px;overflow-y:auto;
+}
+.channel{
+  padding:12px;margin-bottom:8px;
+  background:#0f4d2a;border-radius:6px;
+  text-align:center;cursor:pointer;
+  transition:.2s ease;
+}
+.channel:hover{
+  background:#00d86f;color:#003018;
+  transform:scale(1.04);
+}
+.channel.active{
+  background:#2cff9a;color:#002412;font-weight:bold;
+}
+
+.ticker span{
+  display:inline-block;
+  white-space:nowrap;
+  padding-right:100%;
+  animation:ticker 90s linear infinite;
+}
+
+/* ===== MOBILE STABIL FIX ===== */
+@media(max-width:900px){
+
+  .container{
+    flex-direction: column;
+    height: 100vh;       /* layar penuh */
+    overflow: hidden;    /* cegah layout bergerak */
+  }
+
+  /* Ticker tetap di atas */
+  .ticker{
+    position: sticky;
+    top: 0;
+    bottom: auto;
+    z-index: 1000;
+    order: -1;
+  }
+
+  /* Player tetap */
+  .player{
+    flex: 0 0 auto;
+  }
+
+  .player-wrapper{
+    aspect-ratio: 16/9;
+    height: auto;
+  }
+
+  /* HANYA channel list yang bisa scroll */
+  .channel-list{
+    flex: 1;
+    overflow-y: auto;
+  }
+}
+
+@media(max-width:900px){
+  .clock {
+    font-size:10px; /* setengah dari 20px */
+    padding:4px 7px; /* optional, agar proporsional */
+  }
+}
+
+/* ===== FULLSCREEN FIX ===== */
+:fullscreen video{object-fit:contain !important}
+:fullscreen .ticker,
+:fullscreen .channel-list,
+:fullscreen .theme-toggle{display:none}
+
+body.light {
+  background: #f2f2f2;
+  color: #002412;
+}
+
+body.light .player-wrapper {
+  background: #e0e0e0;
+  box-shadow: 0 0 18px rgba(0, 200, 128, 0.25);
+}
+
+body.light .channel-list {
+  background: #d9f0e8;
+  color: #002412;
+}
+
+body.light .channel {
+  background: #bce1c8;
+  color: #002412;
+}
+
+body.light .channel:hover {
+  background: #80d68f;
+  color: #003018;
+}
+
+body.light .ticker {
+  background: #bce1c8;
+  color: #002412;
+}
+
+body.light .theme-toggle {
+  background: #e0e0e0;
+  color: #002412;
+}
+
+</style>
+</head>
+
+<body>
+
+<button id="themeToggle" class="theme-toggle">🌙</button>
+
+<div class="container">
+
+<div class="player">
+<div class="player-wrapper" id="playerBox">
+<video id="video" muted autoplay playsinline controls></video>
+<div class="clock" id="clock"></div>
+<button class="fullscreen-btn" onclick="toggleFullscreen()">⛶</button>
+</div>
+</div>
+
+<!-- TICKER UNTUK MOBILE -->
+  <div class="ticker" title="Headline News">
+    <span id="tickerText">Memuat berita terbaru..</span>
+  </div>
+  
+<div class="channel-list">
+    <div class="channel active" data-url="https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/bitrate_3.m3u8">REAL MADRID TV</div>
+    <div class="channel" data-url="https://btv.secureswiftcontent.com/han/btv/btv10005/srtoutput/manifest.m3u8">BERITA SATU</div>
+    <div class="channel" data-url="https://beritasatu.secureswiftcontent.com/han/beritasatu/bsatu10008/srtoutput/manifest.m3u8">BERITA SATU ENGLISH</div>	
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=https://live.cnnindonesia.com/livecnn/smil:cnntv.smil/chunklist_w2069057087_b384000_sleng.m3u8">CNN INDONESIA</div>
+    <div class="channel" data-url="https://hgmtv.com:19360/garudatvlivestreaming/garudatvlivestreaming.m3u8">GARUDA TV</div>
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=http://122.248.43.242:1935/JTVSURABAYA/_definst_/myStream/playlist.m3u8">JTV</div>
+    <div class="channel" data-url="https://edge.medcom.id/live-edge/smil:metro.smil/playlist.m3u8">METRO TV</div>
+    <div class="channel" data-url="https://nusantaratv.siar.us/nusantaratv/live/playlist.m3u8">NUSANTARA TV</div>
+    <div class="channel" data-url="https://rtvstream.rtv.co.id:4555/hls/rtv.m3u8">RAJAWALI TV</div>
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=http://202.80.222.20/cdn/iptv/Tvod/001/channel2000115/1024.m3u8">SINDO NEWS</div>
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=https://video.detik.com/trans7/smil:trans7.smil/index.m3u8">TRANS 7</div>
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=https://video.detik.com/transtv/smil:transtv.smil/index.m3u8">TRANS TV</div>
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=http://202.80.222.20/cdn/iptv/Tvod/001/channel2000018/1024.m3u8">TV ONE</div>
+    <div class="channel" data-url="https://ott-balancer.tvri.go.id/live/eds/Nasional/hls/Nasional.m3u8">TVRI</div>
+    <div class="channel" data-url="https://ott-balancer.tvri.go.id/live/eds/NTB/hls/NTB.m3u8">TVRI NTB</div>
+    <div class="channel" data-url="https://ott-balancer.tvri.go.id/live/eds/SportHD/hls/SportHD.m3u8">TVRI SPORT</div>
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=http://amdlive-ch01.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8">ARIRANG TV</div>
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=http://202.80.222.20/cdn/iptv/Tvod/001/channel2000042/1024.m3u8">BALI TV</div>
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=https://5bf7b725107e5.streamlock.net/btv/btv/playlist.m3u8">BALIKPAPAN TV</div>
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=http://202.150.153.254:65500/bandungtvWEBSITE.m3u8">BANDUNG TV</div>
+    <div class="channel" data-url="https://banjartv.siar.us/banjartv/live/playlist.m3u8">BANJAR TV</div>
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=http://122.248.43.242:1935/BATAMTV/_definst_/myStream/playlist.m3u8">BATAM TV</div>
+    <div class="channel" data-url="https://5bf7b725107e5.streamlock.net/brtv/brtv/playlist.m3u8">BRTV</div>
+    <div class="channel" data-url="https://5bf7b725107e5.streamlock.net/bungotv/bungotv/playlist.m3u8">BUNGO TV</div>
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=https://5bf7b725107e5.streamlock.net/davika/davika/playlist.m3u8">DAVIKA TV</div>	
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=https://live.efarinatv.com/hls/bgtaufikganteng.m3u8">EFARINA TV</div>
+    <div class="channel" data-url="https://e.siar.us/live/dmtv.m3u8">DM TV MALANG</div>
+    <div class="channel" data-url="https://dutatv.siar.us/dutatv/live/playlist.m3u8">DUTA TV</div>
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=http://122.248.43.242:1935/FAJARTV/_definst_/myStream/playlist.m3u8">FAJAR TV</div>	
+    <div class="channel" data-url="https://tvstreamcast.com/indonesiana.m3u8">INDONESIA TV</div>
+    <div class="channel" data-url="https://inspiratv.siar.us/inspiratv/live/playlist.m3u8">INSPIRA TV</div>	
+    <div class="channel" data-url="https://h1.intechmedia.net/intech/ch1.m3u8">INSAN TV</div>
+    <div class="channel" data-url="https://ams.juraganstreaming.com:5443/JambiTV/streams/livestream.m3u8">JAMBI TV</div>
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=http://122.248.43.242:1935/JAWAPOSTVSBY/_definst_/myStream/playlist.m3u8">JAWA POS TV</div>
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=https://stream.jogjatv.co.id/jtvlive/stream/index.m3u8">JOGJA TV</div>
+    <div class="channel" data-url="https://flv.intechmedia.net/live/ch118.m3u8">KTV</div>	
+    <div class="channel" data-url="https://lingkartv.my.id/hls/lingkartv.m3u8">LINGKAR TV</div>
+    <div class="channel" data-url="https://streamcdne2-4c4b867c89244861ac216426883d1ad0.msvdn.net/live/S62628868/uhdWBlkC1AoO/chunklist_b2428000.m3u8">M2O TV</div>
+    <div class="channel" data-url="https://stream.asianastream.com/madani/madanitv.smil/playlist.m3u8">MADANI TV</div>
+    <div class="channel" data-url="https://v2.siar.us/radartasikmalaya/live/playlist.m3u8">RADAR TASIKMALAYA</div>	
+    <div class="channel" data-url="https://rinjanitv.cloud/hls/tvkabel.m3u8">RINJANI TV</div>
+    <div class="channel" data-url="https://rodjatv.com/rodjatv/live_720p2628kbs/index.m3u8">RODJA TV</div>
+    <div class="channel" data-url="https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master_578.m3u8">RED BULL TV</div>
+    <div class="channel" data-url="https://salamtv.siar.us/live/salamtv.m3u8">SALAM TV</div>
+    <div class="channel" data-url="https://cdn.gunadarma.ac.id/streams/sangajitv/ingestsangajitv.m3u8">SANGAJI TV</div>
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=http://116.254.112.74/hls/cakralive.m3u8">SEMARANG TV</div>	
+    <div class="channel" data-url="https://selaparangtv.siar.us/live/selaparangtv.m3u8">SELAPARANG TV</div>
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=https://sampit-tv.siar.us/live/sampit-tv.m3u8">SAMPIT TV</div>
+    <div class="channel" data-url="https://live.salira.tv/p/3870/hybrid/play.m3u8">SALIRA TV</div>
+    <div class="channel" data-url="https://stream.staratv.id/hls/0/stream.m3u8">STARA TV</div>
+    <div class="channel" data-url="https://bandung.staratv.id/hls/0/stream.m3u8">STARA TV BANDUNG</div>
+    <div class="channel" data-url="https://cianjur.staratv.id/hls/0/stream.m3u8">STARA TV CIANJUR</div>
+    <div class="channel" data-url="https://malang.staratv.id/hls/0/stream.m3u8">STARA TV MALANG</div>
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=http://122.248.43.242:1935/SULTRATV/_definst_/myStream/playlist.m3u8">SULTRA TV</div>
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=https://e.siar.us/live/surabayatv.m3u8">SURABAYA TV</div>
+    <div class="channel" data-url="https://surautv.siar.us/live/surautv.m3u8">SURAU TV</div>
+    <div class="channel" data-url="https://5bf7b725107e5.streamlock.net/tvtabalong/tvtabalong/playlist.m3u8">TABALONG TV</div>	
+    <div class="channel" data-url="https://5bf7b725107e5.streamlock.net/tv9/tv9/playlist.m3u8">TV9 NUSANTARA</div>
+    <div class="channel" data-url="https://mantotv.ariadishut.workers.dev/?url=http://103.18.181.69:1935/golive/livestream/playlist.m3u8">TVR PARLEMEN</div>
+    <div class="channel" data-url="https://cdn.gunadarma.ac.id/streams/ugtv/ingestugtv.m3u8">UGTV</div>
+    <div class="channel" data-url="https://ams.juraganstreaming.com:5443/LiveApp/streams/wesaltv.m3u8">WESAL TV</div>
+    <div class="channel" data-url="https://amg00477-samsunguk-wilderplanet-samsunguk-samsunguk-yt0go.amagi.tv/playlist/amg00477-samsunguk-wilderplanet-samsunguk-samsunguk/playlist.m3u8">WILD PLANET</div>
+</div>
+
+</div>
+
+<script>
+
+const video = document.getElementById("video");
+const channels = document.querySelectorAll(".channel");
+const playerBox = document.getElementById("playerBox");
+const themeToggle = document.getElementById("themeToggle");
+const clock = document.getElementById("clock");
+const ticker = document.querySelector(".ticker");
+const tickerText = document.getElementById("tickerText");
+
+let hls;
+
+/* ===== LOAD CNN TICKER ===== */
+async function loadCNNTicker(){
+
+  try{
+    const response = await fetch("https://ticker.ariadishut.workers.dev");
+    const data = await response.json();
+
+    if(!data || !data.length){
+      return;
+    }
+
+    const headlines = data.map(item => `📰 ${item.title}`)
+      .join("   ✦✦✦   ");
+
+    // HANYA update kalau berbeda (agar animasi tidak reset)
+    if(tickerText.textContent !== headlines){
+      tickerText.textContent = headlines;
+    }
+
+  }catch(e){
+    console.log("Ticker error");
+  }
+}
+
+loadCNNTicker();
+setInterval(loadCNNTicker,30000);
+
+ticker.onclick=()=>ticker.classList.toggle("paused");
+
+/* ===== THEME ===== */
+themeToggle.onclick=()=>{
+document.body.classList.toggle("light");
+themeToggle.textContent=
+document.body.classList.contains("light")?"☀️":"🌙";
+};
+
+/* ===== PLAY STREAM ===== */
+function playTV(url){
+if(hls)hls.destroy();
+if(Hls.isSupported()){
+hls=new Hls();
+hls.loadSource(url);
+hls.attachMedia(video);
+}else{
+video.src=url;
+}
+video.play().catch(()=>{});
+}
+
+channels.forEach(ch=>{
+ch.onclick=()=>{
+channels.forEach(c=>c.classList.remove("active"));
+ch.classList.add("active");
+playTV(ch.dataset.url);
+};
+});
+playTV(channels[0].dataset.url);
+
+/* ===== FULLSCREEN ===== */
+function toggleFullscreen(){
+if(!document.fullscreenElement){
+playerBox.requestFullscreen();
+screen.orientation?.lock("landscape").catch(()=>{});
+}else{
+document.exitFullscreen();
+screen.orientation?.unlock();
+}
+}
+
+/* ===== CLOCK ===== */
+setInterval(()=>{
+clock.textContent=new Date().toLocaleTimeString("id-ID");
+},1000);
+
+</script>
+
+</body>
+</html>
