@@ -1,0 +1,221 @@
+*{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+body{margin:0;background:#061b0f;color:#eafff3}
+
+/* ===== THEME BUTTON ===== */
+.theme-toggle{
+  position:fixed;top:8px;right:10px;z-index:1600;
+  padding:7px 14px;border-radius:20px;border:0;cursor:pointer;
+  background:#0b3d1e;color:#eafff3;font-size:16px;transition:.25s ease;
+}
+.theme-toggle:hover{
+  background:#00d86f;transform:scale(1.1);
+  box-shadow:0 0 12px rgba(0,255,140,.7);
+}
+
+/* ===== MOBILE FIX ===== */
+@media(max-width:900px){
+  .theme-toggle{
+    top:8px;       /* tetap di atas layar */
+    right:10px;    /* tetap di kanan */
+    font-size:14px; 
+    padding:5px 10px;
+  }
+}
+
+/* ===== TICKER ===== */
+.ticker{
+  position:fixed;
+  bottom:0;
+  left:0;          /* WAJIB */
+  right:0;         /* WAJIB */
+  width:100%;      /* cukup 100% */
+  height:48px;
+  background:#0b3d1e;
+  overflow:hidden;
+  z-index:1000;
+
+  display:flex;
+  align-items:center;
+
+  padding:0;       /* hapus padding kiri */
+  margin:0;        /* pastikan nol */
+}
+
+.ticker span{
+  display:inline-block;
+  white-space:nowrap;
+
+  padding-left:20px;     /* jarak teks */
+  padding-right:100%;
+
+  animation:ticker 90s linear infinite;
+}
+
+html, body{
+  margin:0;
+  padding:0;
+  overflow-x:hidden;   /* penting untuk mobile */
+}
+
+@keyframes ticker{
+  0%{transform:translateX(0)}
+  100%{transform:translateX(-100%)}
+}
+.ticker.paused span{animation-play-state:paused}
+.ticker span{
+  padding-left:100%;
+}
+
+/* ===== LAYOUT ===== */
+.container{
+  display:flex;gap:12px;
+  height:calc(100vh - 48px);
+  padding:10px;
+}
+
+/* ===== PLAYER ===== */
+.player{flex:3}
+.player-wrapper{
+  position:relative;width:100%;height:100%;
+  background:#022b17;border-radius:10px;
+  box-shadow:0 0 18px rgba(0,255,128,.25);
+}
+video{
+  width:100%;height:100%;object-fit:cover;background:#000;
+}
+
+/* FULLSCREEN BUTTON */
+.fullscreen-btn{
+  position:absolute;bottom:14px;right:14px;
+  background:rgba(0,120,60,.85);color:#fff;border:0;
+  padding:12px 18px;border-radius:10px;
+  cursor:pointer;font-size:26px;transition:.25s ease;
+}
+.fullscreen-btn:hover{
+  background:#00ff8a;color:#003018;
+  transform:scale(1.12);
+}
+
+@media(max-width:900px){
+  .fullscreen-btn {
+    font-size:13px;
+    padding:6px 9px;
+  }
+}
+
+/* CLOCK */
+.clock{
+  position:absolute;top:10px;right:14px;
+  background:rgba(0,0,0,.6);
+  padding:8px 14px;font-size:20px;
+  border-radius:8px;color:#fff;font-weight:bold;
+}
+
+/* ===== CHANNEL LIST ===== */
+.channel-list{
+  flex:1;background:#08311c;
+  border-radius:8px;padding:8px;overflow-y:auto;
+}
+.channel{
+  padding:12px;margin-bottom:8px;
+  background:#0f4d2a;border-radius:6px;
+  text-align:center;cursor:pointer;
+  transition:.2s ease;
+}
+.channel:hover{
+  background:#00d86f;color:#003018;
+  transform:scale(1.04);
+}
+.channel.active{
+  background:#2cff9a;color:#002412;font-weight:bold;
+}
+
+.ticker span{
+  display:inline-block;
+  white-space:nowrap;
+  padding-right:100%;
+  animation:ticker 90s linear infinite;
+}
+
+/* ===== MOBILE STABIL FIX ===== */
+@media(max-width:900px){
+
+  .container{
+    flex-direction: column;
+    height: 100vh;       /* layar penuh */
+    overflow: hidden;    /* cegah layout bergerak */
+  }
+
+  /* Ticker tetap di atas */
+  .ticker{
+    position: sticky;
+    top: 0;
+    bottom: auto;
+    z-index: 1000;
+    order: -1;
+  }
+
+  /* Player tetap */
+  .player{
+    flex: 0 0 auto;
+  }
+
+  .player-wrapper{
+    aspect-ratio: 16/9;
+    height: auto;
+  }
+
+  /* HANYA channel list yang bisa scroll */
+  .channel-list{
+    flex: 1;
+    overflow-y: auto;
+  }
+}
+
+@media(max-width:900px){
+  .clock {
+    font-size:10px; /* setengah dari 20px */
+    padding:4px 7px; /* optional, agar proporsional */
+  }
+}
+
+/* ===== FULLSCREEN FIX ===== */
+:fullscreen video{object-fit:contain !important}
+:fullscreen .ticker,
+:fullscreen .channel-list,
+:fullscreen .theme-toggle{display:none}
+
+body.light {
+  background: #f2f2f2;
+  color: #002412;
+}
+
+body.light .player-wrapper {
+  background: #e0e0e0;
+  box-shadow: 0 0 18px rgba(0, 200, 128, 0.25);
+}
+
+body.light .channel-list {
+  background: #d9f0e8;
+  color: #002412;
+}
+
+body.light .channel {
+  background: #bce1c8;
+  color: #002412;
+}
+
+body.light .channel:hover {
+  background: #80d68f;
+  color: #003018;
+}
+
+body.light .ticker {
+  background: #bce1c8;
+  color: #002412;
+}
+
+body.light .theme-toggle {
+  background: #e0e0e0;
+  color: #002412;
+}
