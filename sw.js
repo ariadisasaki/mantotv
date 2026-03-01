@@ -2,10 +2,10 @@ const CACHE_NAME = "manto-tv-v1";
 
 const ASSETS = [
   "/",
-  "./index.html",
-  "./style.css",
-  "./app.js",
-  "./manifest.json",
+  "/index.html",
+  "/style.css",
+  "/app.js",
+  "/manifest.json",
   "https://cdn.jsdelivr.net/npm/hls.js@latest"
 ];
 
