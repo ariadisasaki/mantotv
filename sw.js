@@ -1,12 +1,13 @@
-const CACHE_NAME = "manto-tv-v1";
+const CACHE_NAME = "manto-tv-v2";
 
 const ASSETS = [
-  "/",
+  "./",
   "index.html",
   "style.css",
   "app.js",
   "manifest.json",
-  "https://cdn.jsdelivr.net/npm/hls.js@latest"
+  "icon-192.png",
+  "icon-512.png"
 ];
 
 // INSTALL
@@ -47,5 +48,4 @@ self.addEventListener("fetch", event => {
       return response || fetch(event.request);
     })
   );
-
 });
