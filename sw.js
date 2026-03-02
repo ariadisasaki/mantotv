@@ -1,4 +1,4 @@
-const CACHE_NAME = "manto-tv-v2";
+const CACHE_NAME = "manto-tv-v3";
 
 const ASSETS = [
   "./",
