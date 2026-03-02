@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const WORKER = "https://pantoan.ariadishut.workers.dev";
   const SECRET = "MANTO_SUPER_SECRET_2026";
 
-    const APP_VERSION = "1.0.0"; // 🔥 Ganti saat build APK baru
+  const APP_VERSION = "1.0.0"; // 🔥 Ganti saat build APK baru
   const VERSION_API = WORKER + "/version";
 
   /* ================================
