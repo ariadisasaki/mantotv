@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
     color: "#fff",
     padding: "12px 20px",
     borderRadius: "8px",
-    zIndex: "99999",
+    zIndex: "999999",
     boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
     fontSize: "14px",
     display: "flex",
@@ -79,27 +79,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const text = document.createElement("span");
   text.textContent = message || "Versi baru tersedia 🚀";
 
-  const updateBtn = document.createElement("button");
-  updateBtn.textContent = force ? "Update Sekarang" : "Refresh";
-
-  Object.assign(updateBtn.style, {
-    padding: "6px 12px",
-    border: "none",
-    borderRadius: "6px",
-    background: force ? "red" : "#4CAF50",
-    color: "white",
-    cursor: "pointer"
-  });
-
-  updateBtn.addEventListener("click", () => {
-    window.location.reload();
-  });
-
   const closeBtn = document.createElement("button");
-  closeBtn.textContent = "✕";
+  closeBtn.textContent = "Tutup";
 
   Object.assign(closeBtn.style, {
-    padding: "6px 10px",
+    padding: "6px 12px",
     border: "none",
     borderRadius: "6px",
     background: "#555",
@@ -107,17 +91,13 @@ document.addEventListener("DOMContentLoaded", () => {
     cursor: "pointer"
   });
 
-  closeBtn.addEventListener("click", () => {
-    localStorage.setItem("updateDismissed", "true");
+  // 🔥 FIX PENTING: pakai addEventListener
+  closeBtn.addEventListener("click", function () {
     toast.remove();
   });
 
   toast.appendChild(text);
-  toast.appendChild(updateBtn);
-
-  if (!force) {
-    toast.appendChild(closeBtn);
-  }
+  toast.appendChild(closeBtn);
 
   document.body.appendChild(toast);
 }
