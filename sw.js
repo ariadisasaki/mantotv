@@ -1,4 +1,4 @@
-const CACHE_NAME = "manto-tv-v3";
+const CACHE_NAME = "manto-tv-v4";
 
 const ASSETS = [
   "./",
@@ -15,7 +15,6 @@ self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
-  self.skipWaiting();
 });
 
 // ACTIVATE
@@ -48,4 +47,9 @@ self.addEventListener("fetch", event => {
       return response || fetch(event.request);
     })
   );
+});
+self.addEventListener("message", event => {
+  if (event.data === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
 });
