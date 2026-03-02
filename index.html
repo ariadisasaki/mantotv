@@ -35,8 +35,10 @@
 </div>
 </div>
 <script src="app.js" defer></script>
-<div id="updateToast" class="update-toast hidden">
-  <span>🚀 Versi baru tersedia!</span>
-  <button id="updateBtn">Update</button>
-</div></body>
+<script>
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("./sw.js");
+}
+</script>
+</body>
 </html>
