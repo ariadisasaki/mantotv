@@ -14,94 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const WORKER = "https://pantoan.ariadishut.workers.dev";
   const SECRET = "MANTO_SUPER_SECRET_2026";
 
-  const APP_VERSION = "1.0.0"; // 🔥 Ganti saat build APK baru
-  const VERSION_API = WORKER + "/version";
-
-  /* ================================
-     VERSION CHECK (ANTI CACHE)
-  ================================== */
-
-  async function checkVersion() {
-
-  // Kalau sudah dismiss, jangan cek lagi
-  if (localStorage.getItem("updateDismissed") === "true") return;
-
-  try {
-    const res = await fetch(
-      VERSION_API + "?t=" + Date.now(),
-      { cache: "no-store" }
-    );
-
-    if (!res.ok) return;
-
-    const data = await res.json();
-
-    console.log("Server:", data.version);
-    console.log("App:", APP_VERSION);
-
-    if (data.version !== APP_VERSION) {
-      showUpdateToast(data.force, data.message);
-    }
-
-  } catch (err) {
-    console.log("Version check failed:", err);
-  }
-}
-
-  /* ================================
-     UPDATE TOAST (FIX TOTAL)
-  ================================== */
-
-  function showUpdateToast(force, message) {
-
-  if (document.getElementById("serverUpdateToast")) return;
-
-  const toast = document.createElement("div");
-  toast.id = "serverUpdateToast";
-
-  Object.assign(toast.style, {
-    position: "fixed",
-    bottom: "20px",
-    left: "50%",
-    transform: "translateX(-50%)",
-    background: "#222",
-    color: "#fff",
-    padding: "12px 20px",
-    borderRadius: "8px",
-    zIndex: "999999",
-    boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
-    fontSize: "14px",
-    display: "flex",
-    alignItems: "center",
-    gap: "10px"
-  });
-
-  const text = document.createElement("span");
-  text.textContent = message || "Versi baru tersedia 🚀";
-
-  const closeBtn = document.createElement("button");
-  closeBtn.textContent = "Tutup";
-
-  Object.assign(closeBtn.style, {
-    padding: "6px 12px",
-    border: "none",
-    borderRadius: "6px",
-    background: "#555",
-    color: "white",
-    cursor: "pointer"
-  });
-
-  // 🔥 FIX PENTING: pakai addEventListener
-  closeBtn.addEventListener("click", function () {
-    toast.remove();
-  });
-
-  toast.appendChild(text);
-  toast.appendChild(closeBtn);
-
-  document.body.appendChild(toast);
-}
-  
   let hls = null;
   let allChannels = [];
   let activeCategory = "all";
@@ -360,6 +272,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* START */
   loadChannels();
-  checkVersion(); // 🔥 cek versi saat aplikasi dibuka
-  setInterval(checkVersion, 60000);  
+
 });
