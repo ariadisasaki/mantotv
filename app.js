@@ -54,7 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showUpdateToast(force, message) {
 
-  // Cegah duplikat
   if (document.getElementById("serverUpdateToast")) return;
 
   const toast = document.createElement("div");
@@ -92,14 +91,9 @@ document.addEventListener("DOMContentLoaded", () => {
     cursor: "pointer"
   });
 
-  closeBtn.addEventListener("click", () => {
-  localStorage.setItem("updateDismissed", "true");
-  toast.remove();
-});
-closeBtn.addEventListener("click", () => {
-  localStorage.setItem("dismissedVersion", data.version);
-  toast.remove();
-});
+  updateBtn.addEventListener("click", () => {
+    window.location.reload();
+  });
 
   const closeBtn = document.createElement("button");
   closeBtn.textContent = "✕";
@@ -114,9 +108,9 @@ closeBtn.addEventListener("click", () => {
   });
 
   closeBtn.addEventListener("click", () => {
-  localStorage.setItem("updateDismissed", "true");
-  toast.remove();
-});
+    localStorage.setItem("updateDismissed", "true");
+    toast.remove();
+  });
 
   toast.appendChild(text);
   toast.appendChild(updateBtn);
