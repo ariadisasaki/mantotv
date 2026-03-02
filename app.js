@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const WORKER = "https://pantoan.ariadishut.workers.dev";
   const SECRET = "MANTO_SUPER_SECRET_2026";
 
-  const APP_VERSION = "1.0.0";
+  const APP_VERSION = "1.0.0"; // 🔥 Ganti saat build APK baru
   const VERSION_API = WORKER + "/version";
 
   /* ================================
@@ -22,27 +22,31 @@ document.addEventListener("DOMContentLoaded", () => {
   ================================== */
 
   async function checkVersion() {
-    try {
-      const res = await fetch(
-        VERSION_API + "?t=" + Date.now(),
-        { cache: "no-store" }
-      );
 
-      if (!res.ok) return;
+  // Kalau sudah dismiss, jangan cek lagi
+  if (localStorage.getItem("updateDismissed") === "true") return;
 
-      const data = await res.json();
+  try {
+    const res = await fetch(
+      VERSION_API + "?t=" + Date.now(),
+      { cache: "no-store" }
+    );
 
-      console.log("Server:", data.version);
-      console.log("App:", APP_VERSION);
+    if (!res.ok) return;
 
-      if (data.version !== APP_VERSION) {
-        showUpdateToast(data.force, data.message);
-      }
+    const data = await res.json();
 
-    } catch (err) {
-      console.log("Version check failed:", err);
+    console.log("Server:", data.version);
+    console.log("App:", APP_VERSION);
+
+    if (data.version !== APP_VERSION) {
+      showUpdateToast(data.force, data.message);
     }
+
+  } catch (err) {
+    console.log("Version check failed:", err);
   }
+}
 
   /* ================================
      UPDATE TOAST (FIX TOTAL)
@@ -88,9 +92,14 @@ document.addEventListener("DOMContentLoaded", () => {
     cursor: "pointer"
   });
 
-  updateBtn.addEventListener("click", () => {
-    window.location.reload();
-  });
+  closeBtn.addEventListener("click", () => {
+  localStorage.setItem("updateDismissed", "true");
+  toast.remove();
+});
+closeBtn.addEventListener("click", () => {
+  localStorage.setItem("dismissedVersion", data.version);
+  toast.remove();
+});
 
   const closeBtn = document.createElement("button");
   closeBtn.textContent = "✕";
@@ -105,8 +114,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   closeBtn.addEventListener("click", () => {
-    toast.remove();
-  });
+  localStorage.setItem("updateDismissed", "true");
+  toast.remove();
+});
 
   toast.appendChild(text);
   toast.appendChild(updateBtn);
