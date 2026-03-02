@@ -50,46 +50,64 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showUpdateToast(force, message) {
 
-    let toast = document.getElementById("serverUpdateToast");
+  // Kalau sudah pernah ditampilkan, jangan tampilkan lagi
+  if (sessionStorage.getItem("updateShown")) return;
 
-    // Jika belum ada → buat
-    if (!toast) {
-      toast = document.createElement("div");
-      toast.id = "serverUpdateToast";
+  let toast = document.getElementById("serverUpdateToast");
 
-      toast.style.position = "fixed";
-      toast.style.bottom = "20px";
-      toast.style.left = "50%";
-      toast.style.transform = "translateX(-50%)";
-      toast.style.background = "#222";
-      toast.style.color = "#fff";
-      toast.style.padding = "12px 20px";
-      toast.style.borderRadius = "8px";
-      toast.style.zIndex = "9999";
-      toast.style.boxShadow = "0 4px 10px rgba(0,0,0,0.3)";
-      toast.style.fontSize = "14px";
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "serverUpdateToast";
 
-      document.body.appendChild(toast);
-    }
+    toast.style.position = "fixed";
+    toast.style.bottom = "20px";
+    toast.style.left = "50%";
+    toast.style.transform = "translateX(-50%)";
+    toast.style.background = "#222";
+    toast.style.color = "#fff";
+    toast.style.padding = "12px 20px";
+    toast.style.borderRadius = "8px";
+    toast.style.zIndex = "9999";
+    toast.style.boxShadow = "0 4px 10px rgba(0,0,0,0.3)";
+    toast.style.fontSize = "14px";
 
-    toast.innerHTML = `
-      <span>${message || "Versi baru tersedia 🚀"}</span>
-      <button id="updateNowBtn" style="
-        margin-left:15px;
-        padding:6px 12px;
-        border:none;
-        border-radius:6px;
-        background:${force ? "red" : "#4CAF50"};
-        color:white;
-        cursor:pointer;">
-        ${force ? "Update Sekarang" : "Refresh"}
-      </button>
-    `;
-
-    document.getElementById("updateNowBtn").onclick = () => {
-      window.location.reload();
-    };
+    document.body.appendChild(toast);
   }
+
+  toast.innerHTML = `
+    <span>${message || "Versi baru tersedia 🚀"}</span>
+    <button id="updateNowBtn" style="
+      margin-left:15px;
+      padding:6px 12px;
+      border:none;
+      border-radius:6px;
+      background:${force ? "red" : "#4CAF50"};
+      color:white;
+      cursor:pointer;">
+      ${force ? "Update Sekarang" : "Refresh"}
+    </button>
+    <button id="closeToastBtn" style="
+      margin-left:10px;
+      padding:6px 10px;
+      border:none;
+      border-radius:6px;
+      background:#555;
+      color:white;
+      cursor:pointer;">
+      Tutup
+    </button>
+  `;
+
+  document.getElementById("updateNowBtn").onclick = () => {
+    sessionStorage.setItem("updateShown", "true");
+    window.location.reload();
+  };
+
+  document.getElementById("closeToastBtn").onclick = () => {
+    sessionStorage.setItem("updateShown", "true");
+    toast.remove();
+  };
+}
   
   let hls = null;
   let allChannels = [];
