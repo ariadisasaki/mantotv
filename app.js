@@ -1,41 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  // REGISTER SERVICE WORKER
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./sw.js").then(reg => {
-
-      reg.addEventListener("updatefound", () => {
-        const newWorker = reg.installing;
-
-        newWorker.addEventListener("statechange", () => {
-          if (
-            newWorker.state === "installed" &&
-            navigator.serviceWorker.controller
-          ) {
-            showUpdateToast(reg);
-          }
-        });
-      });
-
-    });
-  }
-
-  function showUpdateToast(reg) {
-    const toast = document.getElementById("updateToast");
-    const btn = document.getElementById("updateBtn");
-
-    toast.classList.remove("hidden");
-
-    setTimeout(() => {
-      toast.classList.add("show");
-    }, 50);
-
-    btn.onclick = () => {
-      reg.waiting.postMessage("SKIP_WAITING");
-      window.location.reload();
-    };
-  }
-
   const video = document.getElementById("video");
   const playerBox = document.getElementById("playerBox");
   const themeToggle = document.getElementById("themeToggle");
@@ -50,60 +14,77 @@ document.addEventListener("DOMContentLoaded", () => {
   const WORKER = "https://pantoan.ariadishut.workers.dev";
   const SECRET = "MANTO_SUPER_SECRET_2026";
 
-  /* === VERSION CONTROL === */
-  const APP_VERSION = "1.0.0"; // Ganti sesuai versi APK yang dibuild
+    const APP_VERSION = "1.0.0"; // 🔥 Ganti saat build APK baru
   const VERSION_API = WORKER + "/version";
-  
+
+  /* ================================
+     VERSION CHECK (ANTI CACHE)
+  ================================== */
+
   async function checkVersion() {
     try {
-      const res = await fetch(VERSION_API);
+      const res = await fetch(
+        VERSION_API + "?t=" + Date.now(),
+        { cache: "no-store" }
+      );
+
       if (!res.ok) return;
-  
+
       const data = await res.json();
-  
+
+      console.log("Server:", data.version);
+      console.log("App:", APP_VERSION);
+
       if (data.version !== APP_VERSION) {
-        showServerUpdateToast(data.force, data.message);
+        showUpdateToast(data.force, data.message);
       }
 
     } catch (err) {
-      console.log("Version check failed");
+      console.log("Version check failed:", err);
     }
   }
 
-  function showServerUpdateToast(force, message) {
-  
-  let toast = document.getElementById("updateToast");
+  /* ================================
+     UPDATE TOAST (FIX TOTAL)
+  ================================== */
 
-  // Jika belum ada element toast, buat otomatis
-  if (!toast) {
-    toast = document.createElement("div");
-    toast.id = "updateToast";
-    toast.style.position = "fixed";
-    toast.style.bottom = "20px";
-    toast.style.left = "50%";
-    toast.style.transform = "translateX(-50%)";
-    toast.style.background = "#222";
-    toast.style.color = "#fff";
-    toast.style.padding = "12px 20px";
-    toast.style.borderRadius = "8px";
-    toast.style.zIndex = "9999";
-    toast.style.boxShadow = "0 4px 10px rgba(0,0,0,0.3)";
-    document.body.appendChild(toast);
+  function showUpdateToast(force, message) {
+
+    let toast = document.getElementById("serverUpdateToast");
+
+    // Jika belum ada → buat
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.id = "serverUpdateToast";
+
+      toast.style.position = "fixed";
+      toast.style.bottom = "20px";
+      toast.style.left = "50%";
+      toast.style.transform = "translateX(-50%)";
+      toast.style.background = "#222";
+      toast.style.color = "#fff";
+      toast.style.padding = "12px 20px";
+      toast.style.borderRadius = "8px";
+      toast.style.zIndex = "9999";
+      toast.style.boxShadow = "0 4px 10px rgba(0,0,0,0.3)";
+      toast.style.fontSize = "14px";
+
+      document.body.appendChild(toast);
     }
 
     toast.innerHTML = `
-    <span>${message || "Versi baru tersedia 🚀"}</span>
-    <button id="updateNowBtn" style="
-      margin-left:15px;
-      padding:6px 12px;
-      border:none;
-      border-radius:6px;
-      background:${force ? "red" : "#4CAF50"};
-      color:white;
-      cursor:pointer;">
-      ${force ? "Update Sekarang" : "Refresh"}
-    </button>
-  `;
+      <span>${message || "Versi baru tersedia 🚀"}</span>
+      <button id="updateNowBtn" style="
+        margin-left:15px;
+        padding:6px 12px;
+        border:none;
+        border-radius:6px;
+        background:${force ? "red" : "#4CAF50"};
+        color:white;
+        cursor:pointer;">
+        ${force ? "Update Sekarang" : "Refresh"}
+      </button>
+    `;
 
     document.getElementById("updateNowBtn").onclick = () => {
       window.location.reload();
