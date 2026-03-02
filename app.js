@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const WORKER = "https://pantoan.ariadishut.workers.dev";
   const SECRET = "MANTO_SUPER_SECRET_2026";
 
-  const APP_VERSION = "1.0.0"; // 🔥 Ganti saat build APK baru
+  const APP_VERSION = "1.0.0";
   const VERSION_API = WORKER + "/version";
 
   /* ================================
@@ -50,63 +50,72 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showUpdateToast(force, message) {
 
-  // Kalau sudah pernah ditampilkan, jangan tampilkan lagi
-  if (sessionStorage.getItem("updateShown")) return;
+  // Cegah duplikat
+  if (document.getElementById("serverUpdateToast")) return;
 
-  let toast = document.getElementById("serverUpdateToast");
+  const toast = document.createElement("div");
+  toast.id = "serverUpdateToast";
 
-  if (!toast) {
-    toast = document.createElement("div");
-    toast.id = "serverUpdateToast";
+  Object.assign(toast.style, {
+    position: "fixed",
+    bottom: "20px",
+    left: "50%",
+    transform: "translateX(-50%)",
+    background: "#222",
+    color: "#fff",
+    padding: "12px 20px",
+    borderRadius: "8px",
+    zIndex: "99999",
+    boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
+    fontSize: "14px",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px"
+  });
 
-    toast.style.position = "fixed";
-    toast.style.bottom = "20px";
-    toast.style.left = "50%";
-    toast.style.transform = "translateX(-50%)";
-    toast.style.background = "#222";
-    toast.style.color = "#fff";
-    toast.style.padding = "12px 20px";
-    toast.style.borderRadius = "8px";
-    toast.style.zIndex = "9999";
-    toast.style.boxShadow = "0 4px 10px rgba(0,0,0,0.3)";
-    toast.style.fontSize = "14px";
+  const text = document.createElement("span");
+  text.textContent = message || "Versi baru tersedia 🚀";
 
-    document.body.appendChild(toast);
+  const updateBtn = document.createElement("button");
+  updateBtn.textContent = force ? "Update Sekarang" : "Refresh";
+
+  Object.assign(updateBtn.style, {
+    padding: "6px 12px",
+    border: "none",
+    borderRadius: "6px",
+    background: force ? "red" : "#4CAF50",
+    color: "white",
+    cursor: "pointer"
+  });
+
+  updateBtn.addEventListener("click", () => {
+    window.location.reload();
+  });
+
+  const closeBtn = document.createElement("button");
+  closeBtn.textContent = "✕";
+
+  Object.assign(closeBtn.style, {
+    padding: "6px 10px",
+    border: "none",
+    borderRadius: "6px",
+    background: "#555",
+    color: "white",
+    cursor: "pointer"
+  });
+
+  closeBtn.addEventListener("click", () => {
+    toast.remove();
+  });
+
+  toast.appendChild(text);
+  toast.appendChild(updateBtn);
+
+  if (!force) {
+    toast.appendChild(closeBtn);
   }
 
-  toast.innerHTML = `
-    <span>${message || "Versi baru tersedia 🚀"}</span>
-    <button id="updateNowBtn" style="
-      margin-left:15px;
-      padding:6px 12px;
-      border:none;
-      border-radius:6px;
-      background:${force ? "red" : "#4CAF50"};
-      color:white;
-      cursor:pointer;">
-      ${force ? "Update Sekarang" : "Refresh"}
-    </button>
-    <button id="closeToastBtn" style="
-      margin-left:10px;
-      padding:6px 10px;
-      border:none;
-      border-radius:6px;
-      background:#555;
-      color:white;
-      cursor:pointer;">
-      Tutup
-    </button>
-  `;
-
-  document.getElementById("updateNowBtn").onclick = () => {
-    sessionStorage.setItem("updateShown", "true");
-    window.location.reload();
-  };
-
-  document.getElementById("closeToastBtn").onclick = () => {
-    sessionStorage.setItem("updateShown", "true");
-    toast.remove();
-  };
+  document.body.appendChild(toast);
 }
   
   let hls = null;
