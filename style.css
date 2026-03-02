@@ -370,3 +370,49 @@ body.light .channel.active {
   background: #2cff9a;
   color: #002412;
 }
+
+/* ===== PWA UPDATE TOAST ===== */
+.update-toast {
+  position: fixed;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: linear-gradient(135deg, #0b2f1f, #134d2e);
+  color: #ffffff;
+  padding: 14px 22px;
+  border-radius: 14px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-family: inherit;
+  font-size: 14px;
+  z-index: 9999;
+  opacity: 0;
+  transition: all 0.4s ease;
+}
+
+.update-toast button {
+  background: #1db954;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.update-toast button:hover {
+  background: #18a94a;
+  transform: scale(1.05);
+}
+
+.update-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.hidden {
+  display: none;
+}
