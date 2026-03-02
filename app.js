@@ -1,5 +1,41 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+  // REGISTER SERVICE WORKER
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./sw.js").then(reg => {
+
+      reg.addEventListener("updatefound", () => {
+        const newWorker = reg.installing;
+
+        newWorker.addEventListener("statechange", () => {
+          if (
+            newWorker.state === "installed" &&
+            navigator.serviceWorker.controller
+          ) {
+            showUpdateToast(reg);
+          }
+        });
+      });
+
+    });
+  }
+
+  function showUpdateToast(reg) {
+    const toast = document.getElementById("updateToast");
+    const btn = document.getElementById("updateBtn");
+
+    toast.classList.remove("hidden");
+
+    setTimeout(() => {
+      toast.classList.add("show");
+    }, 50);
+
+    btn.onclick = () => {
+      reg.waiting.postMessage("SKIP_WAITING");
+      window.location.reload();
+    };
+  }
+
   const video = document.getElementById("video");
   const playerBox = document.getElementById("playerBox");
   const themeToggle = document.getElementById("themeToggle");
