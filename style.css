@@ -154,7 +154,7 @@ video{
   display:flex;
   flex-wrap:wrap;
   gap:6px;
-  justify-content:center; /* ini yang membuat center */
+  justify-content:center;
 }
 
 .category-btn{
@@ -219,11 +219,9 @@ video{
     position: sticky;
     top: 0;
     bottom: auto;
-
     width: 100%;
     left: auto;
     right: auto;
-
     border-radius: 10px;
   }
 
@@ -232,7 +230,7 @@ video{
     height: 36px;
   }
 
-  /* optional: kecilkan font agar proporsional */
+  /* atur font agar proporsional */
   .ticker span{
     font-size: 14px;
   }
@@ -315,8 +313,8 @@ body.light .category-btn:hover{
 }
 /* ===== CHANNEL ITEM + LOGO ===== */
 .channel {
-  display: flex;              /* logo & nama sejajar */
-  align-items: center;        /* vertikal center */
+  display: flex;              /* buat logo & nama sejajar */
+  align-items: center;        /* atur vertikal center */
   gap: 10px;                  /* jarak logo & teks */
   padding: 8px 12px;
   margin-bottom: 8px;
