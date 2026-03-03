@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("searchInput");
   const categoryBar = document.getElementById("categoryContainer");
   const channelListEl = document.getElementById("channelList");
-
   const WORKER = "https://pantoan.ariadishut.workers.dev";
   const SECRET = "MANTO_SUPER_SECRET_2026";
 
@@ -183,10 +182,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const div = document.createElement("div");
     div.className = "channel";
 
-    // Gunakan logo jika ada, jika tidak pakai default "No Image"
     const logoSrc = (ch.logo && ch.logo.trim() !== "")
       ? ch.logo
-      : "./no-image.svg";   // <-- pastikan file ini ada di folder project
+      : "./no-image.svg";
 
     div.innerHTML = `
       <img src="${logoSrc}" alt="${ch.name}" class="channel-logo" onerror="this.src='./no-image.svg'">
@@ -270,7 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* START */
+  /* === START === */
   loadChannels();
 
 });
