@@ -4,41 +4,58 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>MANTO TV</title>
-<link rel="manifest" href="manifest.json">
+
 <meta name="theme-color" content="#061b0f">
 <meta name="description" content="MANTO TV - Streaming TV Online">
+
+<link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="style.css">
+
 <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
+
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest" defer></script>
 </head>
+
 <body>
+
 <button id="themeToggle" class="theme-toggle">🌙</button>
+
 <div class="container">
+
   <div class="ticker" title="Headline News">
     <span id="tickerText">Memuat berita terbaru..</span>
   </div>
+
   <div class="player">
     <div class="player-wrapper" id="playerBox">
-      <video id="video" muted autoplay playsinline controls></video>
+      <video id="video" muted autoplay playsinline controls>
+        Browser Anda tidak mendukung video.
+      </video>
       <div class="clock" id="clock"></div>
       <button id="fullscreenBtn" class="fullscreen-btn">⛶</button>
     </div>
   </div>
+
   <div class="sidebar">
     <div class="search-category-wrapper">
       <input type="text" id="searchInput" placeholder="Cari channel...">
       <div class="category-container" id="categoryContainer"></div>
     </div>
+
     <div class="channel-list" id="channelList"></div>
   </div>
+
 </div>
+
 <script src="app.js" defer></script>
+
 <script>
-if("serviceWorker" in navigator){
+if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./sw.js");
 }
 </script>
+
 </body>
 </html>
