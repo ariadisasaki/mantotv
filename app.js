@@ -1,23 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   const video = document.getElementById("video");
-
-const stream = "https://ott-balancer.tvri.go.id/live/eds/Nasional/hls/Nasional.m3u8";
-
-if (Hls.isSupported()) {
-  const hls = new Hls();
-  hls.loadSource(stream);
-  hls.attachMedia(video);
-
-  hls.on(Hls.Events.MANIFEST_PARSED, function () {
-    video.play();
-  });
-
-} else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-  video.src = stream;
-}
-  
-  
   const playerBox = document.getElementById("playerBox");
   const themeToggle = document.getElementById("themeToggle");
   const clock = document.getElementById("clock");
