@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
       hls = null;
     }
 
-    const streamUrl = await generateSecureURL(id);
+    const streamUrl = "https://ott-balancer.tvri.go.id/live/eds/Nasional/hls/Nasional.m3u8";
 
     try{
 
