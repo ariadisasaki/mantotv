@@ -23,32 +23,10 @@ document.addEventListener("DOMContentLoaded", () => {
       screen.orientation.unlock();
     }
   } catch (e) {}
-  
-  async function generateSecureURL(id){
-
-  const SECRET = "mantotv_super_secret_key";
-
-  const exp = Math.floor(Date.now()/1000) + 300;
-
-  const data = id + exp + SECRET;
-
-  const hashBuffer = await crypto.subtle.digest(
-    "SHA-256",
-    new TextEncoder().encode(data)
-  );
-
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-
-  const token = hashArray
-    .map(b => b.toString(16).padStart(2,"0"))
-    .join("");
-
-  return `${WORKER}/stream?id=${id}&exp=${exp}&token=${token}`;
-  }
 
   /* ================= PLAY TV ================= */
 
-  async function playTV(id){
+  function playTV(id){
 
     if(!id || id === currentChannelId) return;
     currentChannelId = id;
@@ -58,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
       hls = null;
     }
 
-    const streamUrl = await generateSecureURL(id);
+    const streamUrl = `${WORKER}/stream?id=${id}`;
 
     try{
 
