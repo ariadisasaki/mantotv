@@ -182,3 +182,7 @@ width:6px;
 background:#2cff9a;
 border-radius:3px;
 }
+
+body{
+cursor:none;
+}
