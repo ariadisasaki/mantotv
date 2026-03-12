@@ -3,16 +3,15 @@
   font-family:Arial,Helvetica,sans-serif;
 }
 
-body{
-  margin:0;
-  background:#061b0f;
-  color:#eafff3;
-}
-
 html,body{
   margin:0;
   padding:0;
   overflow-x:hidden;
+}
+
+body{
+  background:#061b0f;
+  color:#eafff3;
 }
 
 /* === THEME BUTTON === */
@@ -40,8 +39,6 @@ html,body{
 
 @media(max-width:900px){
   .theme-toggle{
-    top:8px;
-    right:10px;
     font-size:14px;
     padding:5px 10px;
   }
@@ -54,7 +51,6 @@ html,body{
   bottom:0;
   left:0;
   right:0;
-  width:100%;
   height:48px;
   background:#0b3d1e;
   overflow:hidden;
@@ -81,29 +77,34 @@ html,body{
 .container{
   display:flex;
   gap:12px;
-  min-height:calc(100vh - 48px);
-  padding:10px;
+  padding:16px;
+  align-items:flex-start;
 }
 
-/* === PLAYER === */
+/* === PLAYER AREA === */
 
 .player{
   flex:3;
+  max-width:1400px;
 }
 
-/* PLAYER FIXED RATIO */
+/* PLAYER WRAPPER */
 
 .player-wrapper{
   position:relative;
   width:100%;
   aspect-ratio:16/9;
-  background:#022b17;
+  background:#000;
   border-radius:10px;
   box-shadow:0 0 18px rgba(0,255,128,.25);
   overflow:hidden;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
-/* VIDEO FIX (NO CROP) */
+/* VIDEO */
 
 video{
   width:100%;
@@ -168,6 +169,7 @@ video{
   flex:1;
   display:flex;
   flex-direction:column;
+  max-width:420px;
 }
 
 /* === SEARCH === */
@@ -228,6 +230,8 @@ video{
   overflow-y:auto;
 }
 
+/* CHANNEL ITEM */
+
 .channel{
   display:flex;
   align-items:center;
@@ -252,7 +256,7 @@ video{
   font-weight:bold;
 }
 
-/* === CHANNEL LOGO === */
+/* CHANNEL LOGO */
 
 .channel-logo{
   width:40px;
@@ -262,6 +266,8 @@ video{
   flex-shrink:0;
 }
 
+/* CHANNEL NAME */
+
 .channel-name{
   flex:1;
   font-size:14px;
@@ -270,7 +276,7 @@ video{
   text-overflow:ellipsis;
 }
 
-/* === MOBILE === */
+/* === MOBILE LAYOUT === */
 
 @media(max-width:900px){
 
@@ -295,12 +301,12 @@ video{
   }
 
   .sidebar{
-    flex:1;
+    max-width:100%;
   }
 
 }
 
-/* === FULLSCREEN MODE === */
+/* === FULLSCREEN === */
 
 :fullscreen video{
   object-fit:contain !important;
