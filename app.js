@@ -1,306 +1,399 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  const video = document.getElementById("video");
-  const playerBox = document.getElementById("playerBox");
-  const themeToggle = document.getElementById("themeToggle");
-  const clock = document.getElementById("clock");
-  const ticker = document.querySelector(".ticker");
-  const tickerText = document.getElementById("tickerText");
-  const fullscreenBtn = document.getElementById("fullscreenBtn");
-  const searchInput = document.getElementById("searchInput");
-  const categoryBar = document.getElementById("categoryContainer");
-  const channelListEl = document.getElementById("channelList");
-  const WORKER = "https://pantoan.ariadishut.workers.dev";
+const video = document.getElementById("video");
+const playerBox = document.getElementById("playerBox");
+const fullscreenBtn = document.getElementById("fullscreenBtn");
 
-  let hls = null;
-  let allChannels = [];
-  let activeCategory = "all";
-  let currentChannelId = null;
+const searchInput = document.getElementById("searchInput");
+const categoryBar = document.getElementById("categoryContainer");
+const channelListEl = document.getElementById("channelList");
 
-  /* ==== RESET ORIENTATION ==== */
-  try {
-    if (screen.orientation && screen.orientation.unlock) {
-      screen.orientation.unlock();
-    }
-  } catch (e) {}
+const WORKER = "https://pantoan.ariadishut.workers.dev";
 
-  /* ================= PLAY TV ================= */
+let hls = null;
+let allChannels = [];
+let visibleChannels = [];
+let activeCategory = "all";
 
-  function playTV(id){
+let currentChannelId = null;
+let currentIndex = 0;
 
-    if(!id || id === currentChannelId) return;
-    currentChannelId = id;
 
-    if(hls){
-      hls.destroy();
-      hls = null;
-    }
+/* ================= PLAY TV ================= */
 
-    const streamUrl = `${WORKER}/stream?id=${id}`;
+function playTV(id){
 
-    try{
+if(!id || id === currentChannelId) return;
 
-      if(Hls.isSupported()){
+currentChannelId = id;
 
-        hls = new Hls({
-          enableWorker:true,
-          lowLatencyMode:true
-        });
+if(hls){
+hls.destroy();
+hls = null;
+}
 
-        hls.loadSource(streamUrl);
-        hls.attachMedia(video);
+const streamUrl = `${WORKER}/stream?id=${id}`;
 
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          video.play().catch(()=>{});
-        });
+try{
 
-      }else{
+if(Hls.isSupported()){
 
-        video.src = streamUrl;
-        video.play().catch(()=>{});
+hls = new Hls({
+enableWorker:true,
+lowLatencyMode:true
+});
 
-      }
+hls.loadSource(streamUrl);
+hls.attachMedia(video);
 
-    }catch(err){
-      console.error("Play error",err);
-    }
+hls.on(Hls.Events.MANIFEST_PARSED,()=>{
+video.play().catch(()=>{});
+});
 
-  }
+}else{
 
-  /* ================= LOAD CHANNEL ================= */
+video.src = streamUrl;
+video.play().catch(()=>{});
 
-  async function loadChannels(){
+}
 
-    try{
+}catch(err){
+console.error("Play error",err);
+}
 
-      const res = await fetch(`${WORKER}/channels`);
-      if(!res.ok) throw new Error("HTTP "+res.status);
+}
 
-      const data = await res.json();
-      if(!Array.isArray(data)) throw new Error("Format salah");
 
-      allChannels = data.map(ch => ({
-        ...ch,
-        category: (
-          Array.isArray(ch.category)
-          ? ch.category
-          : [ch.category]
-        ).map(cat =>
-          cat.toString().trim().toLowerCase()
-        )
-      }));
+/* ================= LOAD CHANNEL ================= */
 
-      renderCategories();
-      renderChannels();
+async function loadChannels(){
 
-      if(allChannels.length){
-        playTV(allChannels[0].id);
-      }
+try{
 
-    }catch(err){
+const res = await fetch(`${WORKER}/channels`);
 
-      console.error("LOAD CHANNEL ERROR",err);
+if(!res.ok) throw new Error("HTTP "+res.status);
 
-      channelListEl.innerHTML =
-      "<div style='padding:10px'>Gagal memuat channel</div>";
+const data = await res.json();
 
-    }
+if(!Array.isArray(data))
+throw new Error("Format salah");
 
-  }
+allChannels = data.map(ch => ({
+...ch,
+category:(Array.isArray(ch.category)
+? ch.category
+: [ch.category]).map(c=>c.toString().trim().toLowerCase())
+}));
 
-  /* ================= CATEGORY ================= */
+renderCategories();
+renderChannels();
 
-  function renderCategories(){
+if(allChannels.length){
+playTV(allChannels[0].id);
+}
 
-    const categories = new Set(["all"]);
+}catch(err){
 
-    allChannels.forEach(ch=>{
-      ch.category.forEach(cat=>{
-        categories.add(cat);
-      });
-    });
+console.error("LOAD CHANNEL ERROR",err);
 
-    categoryBar.innerHTML="";
+channelListEl.innerHTML =
+"<div style='padding:10px'>Gagal memuat channel</div>";
 
-    categories.forEach(cat=>{
+}
 
-      const btn=document.createElement("button");
-      btn.className="cat";
-      btn.dataset.cat=cat;
+}
 
-      btn.textContent=
-        cat==="all"
-        ? "Semua"
-        : cat.charAt(0).toUpperCase()+cat.slice(1);
 
-      if(cat===activeCategory)
-        btn.classList.add("active");
+/* ================= CATEGORY ================= */
 
-      btn.onclick=()=>{
+function renderCategories(){
 
-        activeCategory=cat;
+const categories = new Set(["all"]);
 
-        document.querySelectorAll(".cat")
-        .forEach(b=>b.classList.remove("active"));
+allChannels.forEach(ch=>{
+ch.category.forEach(cat=>{
+categories.add(cat);
+});
+});
 
-        btn.classList.add("active");
+categoryBar.innerHTML="";
 
-        renderChannels();
+categories.forEach(cat=>{
 
-      };
+const btn=document.createElement("button");
 
-      categoryBar.appendChild(btn);
+btn.className="cat";
+btn.dataset.cat=cat;
 
-    });
+btn.textContent =
+cat==="all"
+? "Semua"
+: cat.charAt(0).toUpperCase()+cat.slice(1);
 
-  }
+if(cat===activeCategory)
+btn.classList.add("active");
 
-  /* ================= RENDER CHANNEL ================= */
+btn.onclick=()=>{
 
-  function renderChannels(){
+activeCategory=cat;
 
-    channelListEl.innerHTML="";
+document.querySelectorAll(".cat")
+.forEach(b=>b.classList.remove("active"));
 
-    const keyword=searchInput.value.toLowerCase();
+btn.classList.add("active");
 
-    const filtered=allChannels.filter(ch=>{
+renderChannels();
 
-      const matchCategory=
-        activeCategory==="all" ||
-        ch.category.includes(activeCategory);
+};
 
-      const matchSearch=
-        ch.name.toLowerCase().includes(keyword);
+categoryBar.appendChild(btn);
 
-      return matchCategory && matchSearch;
+});
 
-    });
+}
 
-    if(filtered.length===0){
 
-      channelListEl.innerHTML=
-      "<div style='padding:10px'>Channel tidak ditemukan</div>";
+/* ================= RENDER CHANNEL ================= */
 
-      return;
+function renderChannels(){
 
-    }
+channelListEl.innerHTML="";
 
-    filtered.forEach(ch=>{
+const keyword=searchInput.value.toLowerCase();
 
-      const div=document.createElement("div");
-      div.className="channel";
+const filtered=allChannels.filter(ch=>{
 
-      const logoSrc=(ch.logo && ch.logo.trim()!=="")
-        ? ch.logo
-        : "./no-image.svg";
+const matchCategory =
+activeCategory==="all" ||
+ch.category.includes(activeCategory);
 
-      div.innerHTML=`
-      <img src="${logoSrc}" class="channel-logo"
-      onerror="this.src='./no-image.svg'">
+const matchSearch =
+ch.name.toLowerCase().includes(keyword);
 
-      <span class="channel-name">${ch.name}</span>
-      `;
+return matchCategory && matchSearch;
 
-      if(ch.id===currentChannelId)
-        div.classList.add("active");
+});
 
-      div.onclick=()=>{
-        playTV(ch.id);
-        renderChannels();
-      };
+visibleChannels = filtered;
 
-      channelListEl.appendChild(div);
+if(filtered.length===0){
 
-    });
+channelListEl.innerHTML =
+"<div style='padding:10px'>Channel tidak ditemukan</div>";
 
-  }
+return;
 
-  /* ================= SEARCH ================= */
+}
 
-  searchInput.addEventListener("input",renderChannels);
+filtered.forEach((ch,i)=>{
 
-  /* ================= TICKER ================= */
+const div=document.createElement("div");
 
-  async function loadTicker(){
+div.className="channel";
 
-    try{
+const logoSrc=(ch.logo && ch.logo.trim()!=="")
+? ch.logo
+: "./no-image.svg";
 
-      const res=await fetch(
-        "https://ticker.ariadishut.workers.dev"
-      );
+div.innerHTML=`
+<img src="${logoSrc}" class="channel-logo"
+onerror="this.src='./no-image.svg'">
 
-      if(!res.ok) return;
+<span class="channel-name">${ch.name}</span>
+`;
 
-      const data=await res.json();
+if(ch.id===currentChannelId){
+div.classList.add("active");
+currentIndex = i;
+}
 
-      if(Array.isArray(data) && data.length){
+div.onclick=()=>{
+playTV(ch.id);
+currentIndex = i;
+highlightChannel();
+};
 
-        tickerText.textContent =
-        data.map(x=>"📰 "+x.title).join(" ✦✦✦ ");
+channelListEl.appendChild(div);
 
-      }
+});
 
-    }catch(e){}
+highlightChannel();
 
-  }
+}
 
-  loadTicker();
-  setInterval(loadTicker,30000);
 
-  ticker.onclick=()=>{
-    ticker.classList.toggle("paused");
-  };
+/* ================= HIGHLIGHT CHANNEL ================= */
 
-  /* ================= THEME ================= */
+function highlightChannel(){
 
-  themeToggle.onclick=()=>{
+const items = document.querySelectorAll(".channel");
 
-    document.body.classList.toggle("light");
+items.forEach(el=>el.classList.remove("active"));
 
-    themeToggle.textContent=
-      document.body.classList.contains("light")
-      ? "☀️"
-      : "🌙";
+if(items[currentIndex]){
 
-  };
+items[currentIndex].classList.add("active");
 
-  /* ================= CLOCK ================= */
+items[currentIndex].scrollIntoView({
+behavior:"smooth",
+block:"nearest"
+});
 
-  setInterval(()=>{
+}
 
-    clock.textContent=
-    new Date().toLocaleTimeString("id-ID");
+}
 
-  },1000);
 
-  /* ================= FULLSCREEN ================= */
+/* ================= FULLSCREEN ================= */
 
-  fullscreenBtn.onclick=async ()=>{
+function toggleFullscreen(){
 
-    try{
+try{
 
-      if(!document.fullscreenElement){
+if(!document.fullscreenElement){
 
-        await playerBox.requestFullscreen();
+playerBox.requestFullscreen();
 
-        if(screen.orientation && screen.orientation.lock)
-          await screen.orientation.lock("landscape");
+if(screen.orientation && screen.orientation.lock){
+screen.orientation.lock("landscape").catch(()=>{});
+}
 
-      }else{
+}else{
 
-        await document.exitFullscreen();
+document.exitFullscreen();
 
-        if(screen.orientation && screen.orientation.unlock)
-          screen.orientation.unlock();
+if(screen.orientation && screen.orientation.unlock){
+screen.orientation.unlock();
+}
 
-      }
+}
 
-    }catch(e){}
+}catch(e){
+console.log("fullscreen error",e);
+}
 
-  };
+}
 
-  /* ================= START ================= */
+fullscreenBtn.onclick = toggleFullscreen;
 
-  loadChannels();
+
+/* ================= REMOTE NAVIGATION ================= */
+
+document.addEventListener("keydown",(e)=>{
+
+const key = e.key || e.keyCode;
+
+const items = document.querySelectorAll(".channel");
+
+if(!items.length) return;
+
+
+/* DOWN */
+
+if(key==="ArrowDown" || key===40){
+
+currentIndex++;
+
+if(currentIndex>=items.length)
+currentIndex=0;
+
+highlightChannel();
+
+}
+
+
+/* UP */
+
+if(key==="ArrowUp" || key===38){
+
+currentIndex--;
+
+if(currentIndex<0)
+currentIndex=items.length-1;
+
+highlightChannel();
+
+}
+
+
+/* ENTER / OK */
+
+if(key==="Enter" || key===13){
+
+if(visibleChannels[currentIndex]){
+
+playTV(visibleChannels[currentIndex].id);
+highlightChannel();
+
+}
+
+}
+
+
+/* NEXT CHANNEL */
+
+if(key==="ArrowRight" || key===39){
+
+currentIndex++;
+
+if(currentIndex>=visibleChannels.length)
+currentIndex=0;
+
+playTV(visibleChannels[currentIndex].id);
+highlightChannel();
+
+}
+
+
+/* PREVIOUS CHANNEL */
+
+if(key==="ArrowLeft" || key===37){
+
+currentIndex--;
+
+if(currentIndex<0)
+currentIndex=visibleChannels.length-1;
+
+playTV(visibleChannels[currentIndex].id);
+highlightChannel();
+
+}
+
+
+/* FULLSCREEN VIA REMOTE */
+
+if(
+key==="f" ||
+key==="F" ||
+key===70 ||
+key==="0" ||
+key===48 ||
+key==="Blue" ||
+key===406
+){
+
+toggleFullscreen();
+
+}
+
+
+/* BACK BUTTON */
+
+if(key==="Escape" || key===461 || key===10009){
+video.pause();
+}
+
+});
+
+
+/* ================= SEARCH ================= */
+
+searchInput.addEventListener("input",renderChannels);
+
+
+/* ================= START ================= */
+
+loadChannels();
 
 });
