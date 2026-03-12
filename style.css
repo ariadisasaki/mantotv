@@ -14,7 +14,7 @@ body{
   color:#eafff3;
 }
 
-/* === THEME BUTTON === */
+/* ================= THEME BUTTON ================= */
 
 .theme-toggle{
   position:fixed;
@@ -28,23 +28,13 @@ body{
   background:#0b3d1e;
   color:#eafff3;
   font-size:16px;
-  transition:.25s ease;
 }
 
 .theme-toggle:hover{
   background:#00d86f;
-  transform:scale(1.1);
-  box-shadow:0 0 12px rgba(0,255,140,.7);
 }
 
-@media(max-width:900px){
-  .theme-toggle{
-    font-size:14px;
-    padding:5px 10px;
-  }
-}
-
-/* === TICKER === */
+/* ================= TICKER ================= */
 
 .ticker{
   position:fixed;
@@ -54,16 +44,14 @@ body{
   height:48px;
   background:#0b3d1e;
   overflow:hidden;
-  z-index:1000;
   display:flex;
   align-items:center;
+  z-index:1000;
 }
 
 .ticker span{
-  display:inline-block;
   white-space:nowrap;
   padding-left:100%;
-  padding-right:100%;
   animation:ticker 90s linear infinite;
 }
 
@@ -72,7 +60,7 @@ body{
   100%{transform:translateX(-100%)}
 }
 
-/* === LAYOUT === */
+/* ================= LAYOUT ================= */
 
 .container{
   display:flex;
@@ -81,39 +69,45 @@ body{
   align-items:flex-start;
 }
 
-/* === PLAYER AREA === */
+/* ================= PLAYER ================= */
 
 .player{
   flex:3;
   max-width:1400px;
 }
 
-/* PLAYER WRAPPER */
+/* PLAYER BOX */
 
 .player-wrapper{
   position:relative;
   width:100%;
-  aspect-ratio:16/9;
   background:#000;
   border-radius:10px;
-  box-shadow:0 0 18px rgba(0,255,128,.25);
   overflow:hidden;
+  box-shadow:0 0 18px rgba(0,255,128,.25);
+}
 
-  display:flex;
-  align-items:center;
-  justify-content:center;
+/* RATIO SYSTEM (16:9) */
+
+.player-wrapper::before{
+  content:"";
+  display:block;
+  padding-top:56.25%;
 }
 
 /* VIDEO */
 
-video{
+.player-wrapper video{
+  position:absolute;
+  top:0;
+  left:0;
   width:100%;
   height:100%;
   object-fit:contain;
   background:#000;
 }
 
-/* === FULLSCREEN BUTTON === */
+/* ================= FULLSCREEN BUTTON ================= */
 
 .fullscreen-btn{
   position:absolute;
@@ -122,91 +116,60 @@ video{
   background:rgba(0,120,60,.85);
   color:#fff;
   border:0;
-  padding:12px 18px;
+  padding:10px 16px;
   border-radius:10px;
   cursor:pointer;
-  font-size:26px;
-  transition:.25s ease;
+  font-size:20px;
 }
 
-.fullscreen-btn:hover{
-  background:#00ff8a;
-  color:#003018;
-  transform:scale(1.12);
-}
-
-@media(max-width:900px){
-  .fullscreen-btn{
-    font-size:13px;
-    padding:6px 9px;
-  }
-}
-
-/* === CLOCK === */
+/* ================= CLOCK ================= */
 
 .clock{
   position:absolute;
   top:10px;
   right:14px;
   background:rgba(0,0,0,.6);
-  padding:8px 14px;
-  font-size:20px;
-  border-radius:8px;
-  color:#fff;
-  font-weight:bold;
+  padding:6px 10px;
+  border-radius:6px;
+  font-size:16px;
 }
 
-@media(max-width:900px){
-  .clock{
-    font-size:10px;
-    padding:4px 7px;
-  }
-}
-
-/* === SIDEBAR === */
+/* ================= SIDEBAR ================= */
 
 .sidebar{
   flex:1;
+  max-width:420px;
   display:flex;
   flex-direction:column;
-  max-width:420px;
 }
 
-/* === SEARCH === */
-
-.search-category-wrapper{
-  margin-bottom:8px;
-}
+/* ================= SEARCH ================= */
 
 #searchInput{
   width:100%;
   padding:10px;
-  margin-bottom:8px;
   border-radius:6px;
   border:none;
-  font-size:14px;
-  outline:none;
+  margin-bottom:8px;
 }
 
-/* === CATEGORY BUTTON === */
+/* ================= CATEGORY ================= */
 
 .category-container{
   display:flex;
   flex-wrap:wrap;
   gap:6px;
-  justify-content:center;
+  margin-bottom:8px;
 }
 
 .category-btn{
-  flex:1 1 auto;
-  padding:8px;
-  border:none;
+  flex:1;
+  padding:6px;
+  border:0;
   border-radius:6px;
   cursor:pointer;
   background:#0f4d2a;
   color:#eafff3;
-  font-size:13px;
-  transition:.2s ease;
 }
 
 .category-btn:hover{
@@ -217,10 +180,9 @@ video{
 .category-btn.active{
   background:#2cff9a;
   color:#002412;
-  font-weight:bold;
 }
 
-/* === CHANNEL LIST === */
+/* ================= CHANNEL LIST ================= */
 
 .channel-list{
   flex:1;
@@ -241,19 +203,16 @@ video{
   background:#0f4d2a;
   border-radius:6px;
   cursor:pointer;
-  transition:.2s ease;
 }
 
 .channel:hover{
   background:#00d86f;
   color:#003018;
-  transform:scale(1.03);
 }
 
 .channel.active{
   background:#2cff9a;
   color:#002412;
-  font-weight:bold;
 }
 
 /* CHANNEL LOGO */
@@ -262,7 +221,6 @@ video{
   width:40px;
   height:40px;
   object-fit:contain;
-  border-radius:4px;
   flex-shrink:0;
 }
 
@@ -271,12 +229,9 @@ video{
 .channel-name{
   flex:1;
   font-size:14px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
 }
 
-/* === MOBILE LAYOUT === */
+/* ================= MOBILE ================= */
 
 @media(max-width:900px){
 
@@ -284,52 +239,35 @@ video{
     flex-direction:column;
   }
 
-  .ticker{
-    position:sticky;
-    top:0;
-    bottom:auto;
-    height:36px;
-    border-radius:10px;
-  }
-
-  .ticker span{
-    font-size:14px;
-  }
-
-  .player-wrapper{
-    aspect-ratio:16/9;
-  }
-
   .sidebar{
     max-width:100%;
   }
 
+  .ticker{
+    position:sticky;
+    top:0;
+    height:36px;
+  }
+
 }
 
-/* === FULLSCREEN === */
+/* ================= FULLSCREEN ================= */
 
 :fullscreen video{
-  object-fit:contain !important;
-  width:100%;
-  height:100%;
+  object-fit:contain;
 }
 
 :fullscreen .ticker,
-:fullscreen .channel-list,
+:fullscreen .sidebar,
 :fullscreen .theme-toggle{
   display:none;
 }
 
-/* === LIGHT MODE === */
+/* ================= LIGHT MODE ================= */
 
 body.light{
   background:#f2f2f2;
   color:#002412;
-}
-
-body.light .player-wrapper{
-  background:#e0e0e0;
-  box-shadow:0 0 18px rgba(0,200,128,.25);
 }
 
 body.light .channel-list{
@@ -338,37 +276,9 @@ body.light .channel-list{
 
 body.light .channel{
   background:#bce1c8;
-  color:#002412;
-}
-
-body.light .channel:hover{
-  background:#80d68f;
-}
-
-body.light .channel.active{
-  background:#2cff9a;
 }
 
 body.light .ticker{
   background:#bce1c8;
   color:#002412;
-}
-
-body.light .theme-toggle{
-  background:#e0e0e0;
-  color:#002412;
-}
-
-body.light #searchInput{
-  background:#ffffff;
-  color:#002412;
-}
-
-body.light .category-btn{
-  background:#bce1c8;
-  color:#002412;
-}
-
-body.light .category-btn:hover{
-  background:#80d68f;
 }
